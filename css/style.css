@@ -1,0 +1,34 @@
+/* dev */
+#canvas_wrapper{
+    width: 800px;
+    height: 600px;
+}
+
+#signal_buttons{
+    width: 800px;
+    height: 400px;
+    text-align: center
+}
+
+dev {
+    margin: 0 auto;
+    display: block
+}
+
+/* button */
+#go{
+    background-color: aqua
+}
+
+#warn{
+    background-color: yellow
+}
+
+#stop{
+    background-color: red
+}
+
+button{
+    width: 200px;
+    height: 50px
+}
