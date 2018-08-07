@@ -1,18 +1,26 @@
 /* dev */
 #canvas_wrapper{
-    width: 800px;
-    height: 600px;
+    width: 600px;
+    height: 300px;
+    margin: 0 auto;
 }
 
 #signal_buttons{
-    width: 800px;
-    height: 400px;
+    width: 600px;
+    height: 50px;
+    margin: 0 auto;
     text-align: center
 }
 
 dev {
-    margin: 0 auto;
     display: block
+}
+
+/* canvas */
+canvas{
+    width: 600px;
+    height: 300px;
+    margin: 0 auto;
 }
 
 /* button */
@@ -29,6 +37,7 @@ dev {
 }
 
 button{
-    width: 200px;
-    height: 50px
+    width: 100px;
+    height: 50px;
+    outline: none
 }
