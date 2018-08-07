@@ -1,13 +1,21 @@
 $(function(){
     var ctx = $('canvas')[0].getContext('2d');
     
+    // 信号機のベース(灰色の部分)
+    var signal_base_x = 25; // 信号機のx座標
+    var signal_base_y = 25; // 信号機のy座標
+    var signal_base_width = 250; // 信号機の幅
+    var signal_base_height = 100; // 信号機の高さ
+    var corner_radius = 10; // 信号機の丸角の円の半径
+
+    // 信号
     var go_signal_x = 75; // 青信号のx座標
     var warn_signal_x = 150; // 黄信号のx座標
     var stop_signal_x = 225; // 赤信号のx座標
     var signal_y = 75; // 各信号のy座標
     var signal_radius = 30; // 各信号の半径
     
-    // 信号機のベース(灰色の部分)を描画する
+    // 信号機のベースを描画する
     function drawSignalBase(param){
         ctx.beginPath();
 
@@ -16,7 +24,7 @@ $(function(){
         var y = param.y;
         var width = param.width;
         var height = param.height;
-        var radius = param.corner_radius;
+        var radius = param.radius;
         var color = param.color;
 
         // 色の設定
@@ -103,11 +111,11 @@ $(function(){
     function initialize(){
         // 信号機のベース部分を描画
         drawSignalBase({
-            x: 25,
-            y: 25,
-            width: 250,
-            height: 100,
-            corner_radius: 10,
+            x: signal_base_x,
+            y: signal_base_y,
+            width: signal_base_width,
+            height: signal_base_height,
+            radius: corner_radius,
             color: "#D3D3D3"
         });
 
