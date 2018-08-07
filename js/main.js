@@ -34,11 +34,11 @@ $(function(){
         ctx.moveTo(x+radius, y); // 左上の位置に移動
         ctx.lineTo(x+width-radius, y); // 左上から右上へのサブパスを定義
         ctx.arc(x+width-radius, y+radius, radius, Math.PI*1.5, 0, false); // 右上の丸角の四分円を描画
-        ctx.lineTo(x+width, y+height-radius);// 右上から右下へのサブパスを定義
+        ctx.lineTo(x+width, y+height-radius); // 右上から右下へのサブパスを定義
         ctx.arc(x+width-radius, y+height-radius, radius, 0, Math.PI*0.5, false); // 右下の丸角の四分円を描画
-        ctx.lineTo(x+radius, y+height);// 右下から左下へのサブパスを定義
+        ctx.lineTo(x+radius, y+height); // 右下から左下へのサブパスを定義
         ctx.arc(x+radius, y+height-radius, radius, Math.PI*0.5, Math.PI, false); // 左下の丸角の四分円を描画
-        ctx.lineTo(x, y+radius);// 左下から左上へのサブパスを定義
+        ctx.lineTo(x, y+radius); // 左下から左上へのサブパスを定義
         ctx.arc(x+radius, y+radius, radius, Math.PI, Math.PI*1.5, false); // 左上の丸角の四分円を描画
 
         ctx.closePath();
@@ -65,60 +65,8 @@ $(function(){
         ctx.fill();
     }
 
-    // 進めボタンがクリックされた際、他の信号を消灯し、青信号を点灯する
-    $('#go').click(function(){
-        // 信号機を初期化
-        initialize();
-
-        // 青信号を点灯
-        drawSignal({
-            x: go_signal_x,
-            y: signal_y,
-            radius: signal_radius,
-            color: "#00FFFF"
-        });
-    });
-
-    // 注意ボタンがクリックされた際、他の信号を消灯し、黄信号を点灯する
-    $('#warn').click(function(){
-        // 信号機を初期化
-        initialize();
-
-        // 黄信号を点灯
-        drawSignal({
-            x: warn_signal_x,
-            y: signal_y,
-            radius: signal_radius,
-            color: "#FFFF00"
-        });
-    });
-
-    // 止まれボタンがクリックされた際、他の信号を消灯し、赤信号を点灯する
-    $('#stop').click(function(){
-        // 信号機を初期化
-        initialize();
-
-        // 赤信号を点灯
-        drawSignal({
-            x: stop_signal_x,
-            y: signal_y,
-            radius: signal_radius,
-            color: "#FF0000"
-        });
-    });
-
-    // 信号機を初期化する
-    function initialize(){
-        // 信号機のベース部分を描画
-        drawSignalBase({
-            x: signal_base_x,
-            y: signal_base_y,
-            width: signal_base_width,
-            height: signal_base_height,
-            radius: corner_radius,
-            color: "#D3D3D3"
-        });
-
+    // 信号を初期化する
+    function initializeSignal(){
         // 青信号を描画
         drawSignal({
             x: go_signal_x,
@@ -143,5 +91,100 @@ $(function(){
             color: "#B22222"
         });
     }
+
+    // 信号機を初期化する
+    function initialize(){
+        // 信号機のベース部分を描画
+        drawSignalBase({
+            x: signal_base_x,
+            y: signal_base_y,
+            width: signal_base_width,
+            height: signal_base_height,
+            radius: corner_radius,
+            color: "#D3D3D3"
+        });
+
+        // 信号を初期化
+        initializeSignal();
+    }
+
+    // 信号を変更
+    function changeSignal(signal){
+        // 現在の信号を初期化
+        initializeSignal();
+
+        switch(signal){
+            case "go" :
+                // 青信号を点灯
+                drawSignal({
+                    x: go_signal_x,
+                    y: signal_y,
+                    radius: signal_radius,
+                    color: "#00FFFF"
+                });
+                break;
+            
+            case "warn":
+                // 黄信号を点灯
+                drawSignal({
+                    x: warn_signal_x,
+                    y: signal_y,
+                    radius: signal_radius,
+                    color: "#FFFF00"
+                });
+                break;
+
+            case "stop":
+                // 赤信号を点灯
+                drawSignal({
+                    x: stop_signal_x,
+                    y: signal_y,
+                    radius: signal_radius,
+                    color: "#FF0000"
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // Deferredで処理を待機する
+    $.wait = function(wait_time_ms){
+        // Deferredオブジェクトを作成する
+        var deferred = new $.Deferred;
+
+        // 指定時間後にresolveするようにする
+        setTimeout(function(){
+            deferred.resolve(wait_time_ms);
+        }, wait_time_ms);
+
+        // DefferredオブジェクトのPromiseを返す
+        return deferred.promise();
+    }
+
+    // 開始ボタンがクリックされた際、信号の変更を開始する
+    $('#start').click(function(){
+        // 処理が終わるまで、押下不可能にする
+        $(this).prop("disabled", true);
+
+        changeSignal("go");
+        $.wait(3000)
+            .then(function(wait_time){
+                changeSignal("warn");
+                return $.wait(wait_time);
+            })
+            .then(function(wait_time){
+                changeSignal("stop");
+                return $.wait(wait_time);
+            })
+            .done(function(){
+                // 信号を初期化
+                initializeSignal();
+                // 押下可能にする
+                $('#start').prop("disabled", false); // thisでは開始ボタンを指定できない!
+            });
+    });
+
     initialize();
 });
