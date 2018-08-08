@@ -145,44 +145,45 @@ $(function(){
                 break;
 
             default:
+                console.log("引数が不正です");
                 break;
         }
     }
 
-    // Deferredで処理を待機する
-    $.wait = function(wait_time_ms){
-        // Deferredオブジェクトを作成する
+    // 処理を待機する
+    function wait(wait_time_ms){
+        // Deferredオブジェクトを作成
         var deferred = new $.Deferred;
 
-        // 指定時間後にresolveするようにする
+        // 指定時間後にresolveするように設定
         setTimeout(function(){
             deferred.resolve(wait_time_ms);
         }, wait_time_ms);
 
-        // DefferredオブジェクトのPromiseを返す
+        // DefferredオブジェクトのPromiseを返却
         return deferred.promise();
     }
 
     // 開始ボタンがクリックされた際、信号の変更を開始する
     $('#start').click(function(){
-        // 処理が終わるまで、押下不可能にする
+        // 処理が終わるまで操作不可に設定
         $(this).prop("disabled", true);
 
         changeSignal("go");
-        $.wait(3000)
+        wait(3000)
             .then(function(wait_time){
                 changeSignal("warn");
-                return $.wait(wait_time);
+                return wait(wait_time);
             })
             .then(function(wait_time){
                 changeSignal("stop");
-                return $.wait(wait_time);
+                return wait(wait_time);
             })
             .done(function(){
                 // 信号を初期化
                 initializeSignal();
-                // 押下可能にする
-                $('#start').prop("disabled", false); // thisでは開始ボタンを指定できない!
+                // 操作可能にする
+                $('#start').prop("disabled", false); // MEMO:thisでは開始ボタンを指定できない
             });
     });
 
